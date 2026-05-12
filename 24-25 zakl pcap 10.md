@@ -18,13 +18,16 @@
 Для решения этой задачи открываем предоставленный файл в `Wireshark`.
 Можно сразу заметить, что всего 65 пакетов трафика и понять, что анализ не займет много времени.
 4 пакетом сразу бросается в глаза запрос: `GET /profile?user=admin` 
-![[Pasted image 20260502074909.png]]
+<img width="1919" height="141" alt="image" src="https://github.com/user-attachments/assets/c0cb045f-c5da-4485-9250-e76462fc92dd" />
+
 
 Но http информация там нас особо не интересует, хотя занятно, что злоумышленник одним запросом видимо получил админку: 
-![[Pasted image 20260502075109.png]]
+<img width="648" height="238" alt="image" src="https://github.com/user-attachments/assets/6f6f38cb-69ed-4a93-bab6-92475efa943b" />
+
 
 Далее точно также просмотрев глазами трафик, можно заметить интересный `payload`, который видимо является `Reflected XSS` атакой, атакующий передает вредоносный `js` скрипт в `URL` и когда происходит переход по такой ссылке со стороны жертвы, то злоумышленник получит куки пользователя себе на сервер. Это называется `Session Hijacking`:
-![[Pasted image 20260502075737.png]]
+<img width="1115" height="790" alt="image" src="https://github.com/user-attachments/assets/81641dd3-80ed-4320-b7e8-197d414ae6fc" />
+
 
 В ответе сервера видим какое то странное значение, которое является именем, я изначально подумал, что это флаг и побежал пытаться декодить, но оно ничего из себя особо не представляет.
 
@@ -32,7 +35,8 @@
 
 Точно также пролистав немного ниже и глазами просмотрев трафик, можно заметить следующий интересный пакет:
 
-![[Pasted image 20260502075943.png]]
+<img width="1119" height="788" alt="image" src="https://github.com/user-attachments/assets/1cd83a93-930f-423e-a1fb-799ca805efe7" />
+
 
 Злоумышленник получил себе на сервер `Session ID` пользователя, благодаря ранее использованному пейлоаду, также не трудно заметить, что `Server` размещен на `python` и это подтверждает мою позицию.
 
@@ -41,15 +45,18 @@
 
 И под конец трафика, можно заметить еще один интересный запрос как в начале
 `GET /profile?user=admin`, злоумышленник пытается подключиться под админом:
-![[Pasted image 20260502080217.png]]
+<img width="1919" height="580" alt="image" src="https://github.com/user-attachments/assets/20b637dc-d2d4-4ddd-8137-23c18fd88a21" />
+
 
 И пролистав в самый конец видим запрос 
 `GET /get_secret?username='%20OR%201=1--&password= HTTP/1.1`
 Открываем http stream и видим наш флаг:
-![[Pasted image 20260502080525.png]]
+<img width="1119" height="789" alt="image" src="https://github.com/user-attachments/assets/6afaf725-6b86-4b49-86b3-fb4596fa5e24" />
+
 
 Декодируем с помощью `base64`:
-![[Pasted image 20260502080544.png]]
+<img width="573" height="59" alt="image" src="https://github.com/user-attachments/assets/5fe76772-32ec-4d8b-94ea-830741f7031e" />
+
 
 **Флаг:**
 `*vsosh{pr3dpr1y4t1e_und3r_4tt4ck}*`
