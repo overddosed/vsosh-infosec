@@ -19,6 +19,7 @@
 Запустим задание, перейдём на веб-сервис.
 И здесь мы ничего не видим, кроме как надписи:
 _This site is under construction_
+
 <img width="1524" height="602" alt="image" src="https://github.com/user-attachments/assets/b9d2c866-be56-4f23-a4a0-f44c45e2d8d1" />
 
 
@@ -29,28 +30,34 @@ dirb http://ctfinf.ru:port
 ```
 И просканируем веб-сервис.
 Пока идёт сканирование, откроем `burpsuite`, в любом случае он нам здесь скорее всего пригодится; откроем вкладку proxy и open browser, откроем веб-сервис в этом встроенном браузере, посмотрим передаем ли мы какие либо данные/параметры, для этого включим `Intercept` в `Proxy` и перезагрузим страничку.
+
 <img width="1596" height="734" alt="image" src="https://github.com/user-attachments/assets/8a99aaa5-d718-41db-a4ef-bd1a932da693" />
 
 Тут ничего интересного мы не передаем.
 
 dirb уже должен был отработать, поэтому посмотрим на результаты сканирования:
+
 <img width="588" height="478" alt="image" src="https://github.com/user-attachments/assets/656b79f9-c0b3-49b5-8259-86b710e28c85" />
 
 Мы нашли директории `backup` и `robots.txt` с кодом `200`, что означает, что мы можем спокойно перейти на эти страницы:
 Попробуем перейти на страницу `/backup`
+
 <img width="651" height="599" alt="image" src="https://github.com/user-attachments/assets/bfef2fde-332b-4279-a90d-bafebb5e0cc7" />
 
 И тут есть какой то файлик `service.py`, нажмём на него и посмотрим, что там:
 Мы получаем исходный код нашего веб-сервиса, написанный на питоне.
+
 <img width="624" height="558" alt="image" src="https://github.com/user-attachments/assets/7cd0f5e7-d023-4dbf-ad47-6212de884efe" />
 
 
 Видим, что есть какая то директория `/test_feature`, перейдём по ней и посмотрим, что там:
 На этой странице есть какой то сервис
+
 <img width="754" height="697" alt="image" src="https://github.com/user-attachments/assets/6e68b85c-2df6-41c5-8e2c-18b1d9a85b95" />
 
 
 Давайте ещё раз взглянем на исходник файла `service.py`
+
 <img width="743" height="615" alt="image" src="https://github.com/user-attachments/assets/1a0f655c-5369-4686-9b5c-d13df02d7df9" />
 
 Во-первых заметим, что приложение написано на фреймворке `Flask`.
@@ -67,34 +74,42 @@ def test_feature2():
 ```
 
 Откроем этот сервис в `BurpSuite`, нажмём `Forward`, пропишем в поле что нибудь и нажмём `Submit`:
+
 <img width="1053" height="682" alt="image" src="https://github.com/user-attachments/assets/23133909-088a-424e-9fb2-0bde6ac56676" />
 
 Да мы подаём наш ввод в параметр `Address`, давайте теперь отправим этот `Request` в `Repeater`, чтобы было удобно отправлять запросы на веб-сервер:
 Нажмём `Send` и увидим ответ от сервера
+
 <img width="1255" height="826" alt="image" src="https://github.com/user-attachments/assets/e05eec67-8dab-4113-a25d-c5cbca4cad5f" />
 
 По исходнику мы можем понять, что вместо айпишника мы можем прописать какую нибудь команду, например `ls` или` cat` и прочитать какой нибудь файл на сервере или просмотреть директории, чтобы узнать где лежит флаг.
 Эта уязвимость называется `Command Injection`.
 Откроем пейлоады из папки hacktricks, чтобы понять как мы можем проэксплуатировать эту уязвимость, в поиске пропишем `command`
 Видим файл `command-injection.md`
+
 <img width="1543" height="691" alt="image" src="https://github.com/user-attachments/assets/3fd413f7-476a-4b52-a0e7-812e087a6573" />
 
 Откроем его и попробуем ввести в поле вот эту первую уязвимость, она выглядит подходящей:
+
 <img width="836" height="662" alt="image" src="https://github.com/user-attachments/assets/3c1d0b93-afa6-45db-9ce9-baab50676f63" />
 
 Получаем вот такой вывод и действительно, пейлоад оказался рабочим:
+
 <img width="760" height="698" alt="image" src="https://github.com/user-attachments/assets/b176160c-1c36-4a06-b8ba-c3105c08bab5" />
 
 Собственно с помощью команды `id` мы получили вывод пользователей и их прав, а с помощью команды `ls` получили содержимое корневой директории, попробуем тоже самое сделать, но теперь в `BurpSuite`:
+
 <img width="1261" height="650" alt="image" src="https://github.com/user-attachments/assets/d757b882-05c5-40aa-8938-b0caa44624eb" />
 
 
 Нам не нужен такой длинный пейлоад и давайте сократим его и ещё раз отправим на сервер:
+
 <img width="1258" height="676" alt="image" src="https://github.com/user-attachments/assets/78d829be-8b1e-4ccb-b4d3-02b6c140adf9" />
 
 Видим, что теперь в выводе у нас только пользователи, то есть отработала только команда `id` Попробуем разобраться почему так и запишем наш пейлоад.
 Откроем ещё раз исходный код сервиса:
 скопируем команду ping и проанализируем как вообще выполняется запрос
+
 <img width="1378" height="700" alt="image" src="https://github.com/user-attachments/assets/00472a4b-7c32-4692-83e7-11596226f0ff" />
 
 
@@ -104,6 +119,7 @@ ping ||ls||id; -c 1
 ```
 Ну и конечно, когда мы выполняем команду `ping ls`, то получаем ошибку, потому что мы не можем "пропинговать айпишник `ls`" это не айпи адрес, а вот команда `id` исполняется, поэтому нам нужно `ls` тоже обернуть в знак `ИЛИ` (`||`), то есть отдельно выполнить `ping` (мы получим там ошибку потому что вызываем `ping` без значения "от пустоты"), потом отдельно применить команду `ls`, отдельно применить команду `id` .
 Видим, что команда `ls` отработала, а вот команда `id` не отработала
+
 
 
 Впринципе ничего страшного, что вторая команда не работает, она тут и не нужна.
