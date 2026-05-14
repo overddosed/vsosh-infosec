@@ -19,15 +19,18 @@ Linux\Unix (misc) - флешка возможностей
 Нам дан файл 2 раза запакованный `simplified_wizard_legacy.tar-9.gz`
 пробуем разархивировать:
 
-![[Pasted image 20260510080749.png]]
+<img width="1580" height="850" alt="image" src="https://github.com/user-attachments/assets/9a673cd4-39d6-4f8c-bab3-e2f531145ca6" />
+
 
 И получаем небольшой дамп файлов, идём анализировать.
-![[Pasted image 20260510080920.png]]
-У нас есть 3 бесполезных txt файла и 2 картинки, проанализируем сначала hidden_image.png
-![[Pasted image 20260510081129.png]]
+<img width="1584" height="799" alt="image" src="https://github.com/user-attachments/assets/8fca63f8-2172-495b-a244-095de128fe6b" />
 
-В конце файла есть зашифрованная в base64 строка, пробуем декодировать.
-![[Pasted image 20260510081224.png]]
+У нас есть 3 бесполезных `txt` файла и 2 картинки, проанализируем сначала `hidden_image.png`
+<img width="401" height="637" alt="image" src="https://github.com/user-attachments/assets/1b11ecba-245e-403b-b76c-e1beceb3dd35" />
+
+
+В конце файла есть зашифрованная в `base64 строка`, пробуем декодировать.
+<img width="1592" height="844" alt="image" src="https://github.com/user-attachments/assets/44166e89-459e-41ad-96b2-bd55fed30224" />
 
 Получили флаг.
 `vsosh{S1mpl1f13d_Mag1c`
