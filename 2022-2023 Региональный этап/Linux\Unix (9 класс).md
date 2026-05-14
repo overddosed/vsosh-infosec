@@ -23,11 +23,13 @@ ssh petya:ctfinf.ru -p port
 Подтвердим `fingerprinting` и введём пароль `pass-for-ssh`
 
 Узнаем в какой директории находимся и переместимся в корневую, где замечаем файл под названием `flag.txt`, но права на чтение файла есть только у `root`.
+
 <img width="642" height="796" alt="image" src="https://github.com/user-attachments/assets/679377ad-7584-48b6-a065-ebbe0345e3f5" />
 
 
 В описании к заданию было сказано, что рекомендуемые утилиты: `john`, `hashcat`.
 Значит скорее всего нужно узнать `hash` пользователя `root` и взломать его путём `перебора` через `hashcat`. Для этого просмотрим содержимое файла `/etc/shadow`:
+
 <img width="998" height="548" alt="image" src="https://github.com/user-attachments/assets/e0349b9c-86b1-4a72-815c-76eb3f1b5463" />
 
 Копируем `hash` пользователя `root` и открываем второе окно терминала, в котором создаём файл под названием `root.hash`, будем использовать утилиту `hashcat` и перебирать `hash` по словарю `rockyou.txt`, вводим такую команду:
@@ -38,14 +40,17 @@ hashcat root.hash /usr/share/wordlists/rockyou.txt --show
 ```
 
 Пароль пользователя `root - test`
+
 <img width="783" height="307" alt="image" src="https://github.com/user-attachments/assets/590fd074-d45e-42dd-a5b7-e27f1066dcaf" />
 
 
 Вводим пароль и входим в систему под пользователем `root`
+
 <img width="319" height="82" alt="image" src="https://github.com/user-attachments/assets/81f1df4e-d67b-4538-8160-eda1e59d4e04" />
 
 
 Читаем флаг:
+
 <img width="639" height="625" alt="image" src="https://github.com/user-attachments/assets/909456a9-9ff4-4a35-b6b4-e02bfdd10ad9" />
 
 
